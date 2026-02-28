@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title %}Admin Panel{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12 text-center">
+        <h2 class="text-gold display-5 fw-bold mb-3"><i class="bi bi-shield-lock-fill me-3"></i>Admin Panel</h2>
+        <p class="text-light lead">Manage users and oversee all platform skills.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-dark border-gold shadow-lg">
+            <div class="card-header border-gold-subtle bg-darkest pt-4 pb-0">
+                <!-- Nav Tabs -->
+                <ul class="nav nav-tabs card-header-tabs border-bottom-0" id="adminTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active bg-dark text-gold border-gold border-bottom-0" id="users-tab"
+                            data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab" aria-controls="users"
+                            aria-selected="true">
+                            <i class="bi bi-people-fill me-2"></i>Manage Users
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link bg-dark text-light border-0" id="skills-tab" data-bs-toggle="tab"
+                            data-bs-target="#skills" type="button" role="tab" aria-controls="skills"
+                            aria-selected="false">
+                            <i class="bi bi-collection-fill me-2"></i>Manage Posts (Skills)
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="tab-content" id="adminTabsContent">
+
+                    <!-- Users Tab Pane -->
+                    <div class="tab-pane fade show active p-4" id="users" role="tabpanel" aria-labelledby="users-tab">
+                        <div class="table-responsive">
+                            <table
+                                class="table table-dark table-hover table-bordered border-gold-subtle align-middle mb-0">
+                                <thead class="table-darkest text-gold text-center">
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Role</th>
+                                        <th scope="col">Posts</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                    <tr class="text-center">
+                                        <th scope="row" class="text-secondary">{{ user.id }}</th>
+                                        <td class="fw-bold">{{ user.username }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>
+                                            {% if user.is_admin %}
+                                            <span class="badge bg-gold text-dark"><i
+                                                    class="bi bi-star-fill me-1"></i>Admin</span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">User</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ user.skills|length }}</td>
+                                        <td>
+                                            {% if not user.is_admin %}
+                                            <form action="{{ url_for('admin_delete_user', user_id=user.id) }}"
+                                                method="POST" class="d-inline"
+                                                onsubmit="return confirm('WARNING: Are you sure you want to delete this user? This will also delete ALL skills associated with them!')">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"><i
+                                                        class="bi bi-trash-fill"></i> Delete User</button>
+                                            </form>
+                                            {% else %}
+                                            <button class="btn btn-sm btn-outline-secondary disabled"
+                                                title="Cannot delete admins"><i class="bi bi-shield-check"></i>
+                                                Protected</button>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Skills/Posts Tab Pane -->
+                    <div class="tab-pane fade p-4" id="skills" role="tabpanel" aria-labelledby="skills-tab">
+                        {% if skills %}
+                        <div class="row g-4">
+                            {% for skill in skills %}
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card h-100 shadow-sm skill-card border-gold-subtle bg-darkest">
+                                    <div class="card-body p-4">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h5 class="card-title text-gold mb-0">{{ skill.title }}</h5>
+                                            <span class="badge bg-secondary">{{ skill.category.name }}</span>
+                                        </div>
+                                        <h6 class="card-subtitle mb-3 text-muted">
+                                            <small><i class="bi bi-person me-1"></i>{{ skill.author.username }}</small>
+                                        </h6>
+                                        <p class="card-text text-light small">{{ skill.description|truncate(100) }}</p>
+                                    </div>
+                                    <div
+                                        class="card-footer bg-transparent border-top border-gold-subtle d-flex justify-content-between align-items-center">
+                                        <small class="text-secondary">{{ skill.date_posted.strftime('%Y-%m-%d')
+                                            }}</small>
+                                        <div>
+                                            <a href="{{ url_for('update_skill', skill_id=skill.id) }}"
+                                                class="btn btn-sm btn-outline-gold me-1"><i
+                                                    class="bi bi-pencil-square"></i></a>
+                                            <form action="{{ url_for('delete_skill', skill_id=skill.id) }}"
+                                                method="POST" class="d-inline" onsubmit="return confirmDelete()">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"><i
+                                                        class="bi bi-trash-fill"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info bg-darkest border-gold text-light text-center">
+                            No skills have been posted to the platform yet.
+                        </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add some custom JS just for the tabs styling to make the inactive ones look right in dark mode -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabs = document.querySelectorAll('#adminTabs .nav-link');
+        tabs.forEach(tab => {
+            tab.addEventListener('shown.bs.tab', function (e) {
+                // Remove active styling from all
+                tabs.forEach(t => {
+                    t.classList.remove('text-gold', 'border-gold', 'border-bottom-0');
+                    t.classList.add('text-light', 'border-0');
+                });
+                // Add active styling to clicked tab
+                e.target.classList.remove('text-light', 'border-0');
+                e.target.classList.add('text-gold', 'border-gold', 'border-bottom-0');
+            });
+        });
+    });
+</script>
+{% endblock %}

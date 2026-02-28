@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4 text-gold">Search Results for "{{ query }}"</h2>
+
+        <!-- Search bar fallback -->
+        <div class="mb-5 bg-dark p-4 rounded border border-gold-subtle shadow-sm">
+            <form action="{{ url_for('search') }}" method="GET" class="d-flex">
+                <div class="input-group">
+                    <span class="input-group-text bg-darkest border-gold-subtle text-gold"><i
+                            class="bi bi-search"></i></span>
+                    <input class="form-control bg-darkest text-light border-gold-subtle" type="search"
+                        placeholder="Search another skill..." aria-label="Search" name="q" value="{{ query }}">
+                    <button class="btn btn-gold fw-bold px-4" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Skills list -->
+        {% if skills %}
+        <div class="row g-4">
+            {% for skill in skills %}
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm skill-card border-gold-subtle">
+                    <div class="card-body p-4">
+                        <h5 class="card-title text-gold">{{ skill.title }}</h5>
+                        <h6 class="card-subtitle mb-3 text-muted">
+                            <span class="badge bg-secondary">{{ skill.category.name }}</span>
+                            <small class="ms-2">By {{ skill.author.username }}</small>
+                        </h6>
+                        <p class="card-text text-light">{{ skill.description|truncate(150) }}</p>
+                    </div>
+                    <div
+                        class="card-footer bg-transparent border-top border-gold-subtle d-flex justify-content-between align-items-center">
+                        <small class="text-secondary">{{ skill.date_posted.strftime('%Y-%m-%d') }}</small>
+                        {% if current_user.is_authenticated and skill.author == current_user %}
+                        <a href="{{ url_for('update_skill', skill_id=skill.id) }}"
+                            class="btn btn-sm btn-outline-gold"><i class="bi bi-pencil-square me-1"></i>Edit</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% elif query %}
+        <!-- Empty state message -->
+        <div class="alert alert-warning bg-dark border-gold text-light">
+            <i class="bi bi-exclamation-triangle-fill text-gold me-2"></i> No skills found matching "{{ query }}". Try
+            different keywords or <a href="{{ url_for('home') }}" class="alert-link text-gold">return home</a>.
+        </div>
+        {% else %}
+        <!-- Initial state if somehow arrived without query parameter -->
+        <div class="alert alert-info bg-dark border-gold text-light">
+            Please enter a search term to find skills.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

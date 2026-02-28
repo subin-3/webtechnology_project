@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}{{ legend }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 mt-3">
+            <div class="card-body p-5">
+                <h3 class="card-title mb-4 text-primary border-bottom pb-2">{{ legend }}</h3>
+
+                <!-- Form for creating/updating a skill -->
+                <form method="POST" action="" class="needs-validation" novalidate id="skillForm">
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        {{ form.title.label(class="form-label fw-bold") }}
+                        {% if form.title.errors %}
+                        {{ form.title(class="form-control is-invalid", required=True) }}
+                        <div class="invalid-feedback">
+                            {% for error in form.title.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.title(class="form-control", required=True) }}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.category_id.label(class="form-label fw-bold") }}
+                        {% if form.category_id.errors %}
+                        {{ form.category_id(class="form-select is-invalid", required=True) }}
+                        <div class="invalid-feedback">
+                            {% for error in form.category_id.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.category_id(class="form-select", required=True) }}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form.description.label(class="form-label fw-bold") }}
+                        {% if form.description.errors %}
+                        {{ form.description(class="form-control is-invalid", rows="6", required=True) }}
+                        <div class="invalid-feedback">
+                            {% for error in form.description.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.description(class="form-control", rows="6", required=True) }}
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">Cancel</a>
+                        {{ form.submit(class="btn btn-primary px-4") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-5">
+    <div class="col-md-6 order-2 order-md-1">
+        <h2 class="display-4 fw-bold text-gold mb-4">About SkillSwap</h2>
+        <p class="lead text-light">
+            SkillSwap is a community-driven platform designed to connect individuals who want to share their expertise
+            and learn from others. We believe that everyone has something valuable to teach and something exciting to
+            learn.
+        </p>
+        <p class="text-light">
+            Our mission is to break down the barriers of traditional education and foster a global network of lifelong
+            learners. Whether you're a seasoned professional or a passionate hobbyist, SkillSwap provides the perfect
+            environment to exchange knowledge, build your portfolio, and grow your network.
+        </p>
+        <div class="mt-4">
+            <a href="{{ url_for('register') }}" class="btn btn-gold btn-lg me-3">Join Our Community</a>
+            <a href="{{ url_for('contact') }}" class="btn btn-outline-gold btn-lg">Contact Us</a>
+        </div>
+    </div>
+    <div class="col-md-6 order-1 order-md-2 mb-4 mb-md-0">
+        <!-- Placeholder for a relevant image, styled with our dark theme border -->
+        <div class="p-5 text-center bg-darkest rounded border border-gold shadow-lg">
+            <h1 class="text-gold display-1"><i class="bi bi-people-fill"></i></h1>
+            <h3 class="text-light mt-3">Empowering Connections</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mt-5 text-center g-4">
+    <div class="col-md-4">
+        <div class="card bg-dark border-gold h-100 shadow">
+            <div class="card-body p-4">
+                <h4 class="text-gold mb-3">Share Knowledge</h4>
+                <p class="text-light">Offer your skills to the community and help others achieve their goals while
+                    refining your own expertise.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-dark border-gold h-100 shadow">
+            <div class="card-body p-4">
+                <h4 class="text-gold mb-3">Learn New Things</h4>
+                <p class="text-light">Discover a wide range of categories, from programming to music, and learn directly
+                    from experienced members.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-dark border-gold h-100 shadow">
+            <div class="card-body p-4">
+                <h4 class="text-gold mb-3">Build Relationships</h4>
+                <p class="text-light">Connect with like-minded individuals, collaborate on projects, and build
+                    long-lasting professional networks.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,235 @@
+/* Custom Core Styles for SkillSwap Application - Black & Gold Theme */
+
+:root {
+    --gold: #d4af37;
+    --gold-subtle: #8a7322;
+    --darkest: #0a0a0a;
+    --dark: #1a1a1a;
+    --light-text: #e0e0e0;
+}
+
+/* Global Styles */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--darkest);
+    color: var(--light-text);
+}
+
+/* Typography & Links */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--gold);
+}
+
+a {
+    color: var(--gold);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #ffd700;
+    /* brighter gold on hover */
+}
+
+/* Utility Classes for Theme */
+.text-gold {
+    color: var(--gold) !important;
+}
+
+.bg-darkest {
+    background-color: var(--darkest) !important;
+}
+
+.bg-dark {
+    background-color: var(--dark) !important;
+}
+
+.border-gold {
+    border-color: var(--gold) !important;
+}
+
+.border-gold-subtle {
+    border-color: var(--gold-subtle) !important;
+}
+
+.border-gold-top {
+    border-top: 1px solid var(--gold) !important;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    padding-bottom: 3rem;
+    padding-top: 1rem;
+}
+
+/* Buttons */
+.btn-gold {
+    background-color: var(--gold);
+    color: var(--darkest);
+    border: none;
+}
+
+.btn-gold:hover {
+    background-color: #ffd700;
+    color: var(--darkest);
+}
+
+.btn-outline-gold {
+    color: var(--gold);
+    border-color: var(--gold);
+    background-color: transparent;
+}
+
+.btn-outline-gold:hover {
+    background-color: var(--gold);
+    color: var(--darkest);
+}
+
+.btn-primary {
+    background-color: var(--gold);
+    color: var(--darkest);
+    border-color: var(--gold);
+}
+
+.btn-primary:hover {
+    background-color: #ffd700;
+    color: var(--darkest);
+    border-color: #ffd700;
+}
+
+.btn-outline-secondary {
+    color: var(--light-text);
+    border-color: var(--light-text);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--light-text);
+    color: var(--darkest);
+}
+
+/* Hero Section Styles */
+.hero-section {
+    background: linear-gradient(135deg, var(--dark) 0%, var(--darkest) 100%);
+    border: 1px solid var(--gold-subtle);
+}
+
+/* Card Styles */
+.card {
+    background-color: var(--dark);
+    border: 1px solid var(--gold-subtle);
+    color: var(--light-text);
+}
+
+.card-title {
+    color: var(--gold);
+}
+
+/* Form Styles */
+.form-label {
+    color: var(--gold);
+    font-weight: 600;
+}
+
+.form-control,
+.form-select {
+    background-color: var(--darkest);
+    border: 1px solid var(--gold-subtle);
+    color: var(--light-text);
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--darkest);
+    color: var(--light-text);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+}
+
+.input-group-text {
+    background-color: var(--dark);
+    color: var(--gold);
+    border-color: var(--gold-subtle);
+}
+
+/* Card hover animation for dashboard */
+.skill-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.skill-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 .5rem 1rem rgba(212, 175, 55, 0.15) !important;
+    border-color: var(--gold);
+}
+
+/* Badge styling */
+.badge.bg-secondary {
+    background-color: var(--gold-subtle) !important;
+    color: var(--darkest);
+    font-size: 0.85em;
+    padding: 0.4em 0.8em;
+}
+
+/* Nav */
+.navbar-dark .navbar-nav .nav-link {
+    color: var(--light-text);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: var(--gold);
+}
+
+/* Footer Styling */
+footer {
+    border-top: 1px solid var(--gold-subtle);
+}
+
+.footer-links a {
+    position: relative;
+    display: inline-block;
+}
+
+.footer-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--gold);
+    transition: width 0.3s ease;
+}
+
+.footer-links a:hover::after {
+    width: 100%;
+}
+
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(212, 175, 55, 0.1);
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    background-color: var(--gold);
+    color: var(--darkest) !important;
+    transform: translateY(-3px);
+}
+
+/* WTForms Validation Display */
+.invalid-feedback {
+    display: block;
+}

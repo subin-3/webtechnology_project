@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card bg-dark border-gold shadow-lg mt-4">
+            <div class="card-body p-5">
+                <div class="text-center mb-5">
+                    <h2 class="text-gold fw-bold display-5">Get in Touch</h2>
+                    <p class="text-light lead">Have questions or feedback? We'd love to hear from you.</p>
+                </div>
+
+                <!-- Contact Form -->
+                <form method="POST" action="" class="needs-validation" novalidate>
+                    {{ form.hidden_tag() }}
+
+                    <div class="row g-3">
+                        <div class="col-md-6 mb-3">
+                            {{ form.name.label(class="form-label text-gold fw-bold") }}
+                            {% if form.name.errors %}
+                            {{ form.name(class="form-control bg-darkest text-light border-danger", required=True) }}
+                            <div class="invalid-feedback text-danger">
+                                {% for error in form.name.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.name(class="form-control bg-darkest text-light border-gold-subtle", required=True)
+                            }}
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            {{ form.email.label(class="form-label text-gold fw-bold") }}
+                            {% if form.email.errors %}
+                            {{ form.email(class="form-control bg-darkest text-light border-danger", required=True) }}
+                            <div class="invalid-feedback text-danger">
+                                {% for error in form.email.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.email(class="form-control bg-darkest text-light border-gold-subtle", required=True)
+                            }}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.subject.label(class="form-label text-gold fw-bold") }}
+                        {% if form.subject.errors %}
+                        {{ form.subject(class="form-control bg-darkest text-light border-danger", required=True) }}
+                        <div class="invalid-feedback text-danger">
+                            {% for error in form.subject.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.subject(class="form-control bg-darkest text-light border-gold-subtle", required=True) }}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form.message.label(class="form-label text-gold fw-bold") }}
+                        {% if form.message.errors %}
+                        {{ form.message(class="form-control bg-darkest text-light border-danger", rows="6",
+                        required=True) }}
+                        <div class="invalid-feedback text-danger">
+                            {% for error in form.message.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.message(class="form-control bg-darkest text-light border-gold-subtle", rows="6",
+                        required=True) }}
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        {{ form.submit(class="btn btn-gold btn-lg fw-bold") }}
+                    </div>
+                </form>
+            </div>
+
+            <!-- Contact Info Footer in Card -->
+            <div class="card-footer bg-darkest text-center py-5 border-gold-top">
+                <div class="row text-light g-4">
+                    <div class="col-md-4">
+                        <div class="social-icon border-gold mb-3 mx-auto shadow-sm">
+                            <i class="bi bi-envelope-fill text-gold fs-4"></i>
+                        </div>
+                        <h6 class="text-white mb-2 fw-bold">Email Us</h6>
+                        <p class="text-secondary mb-0">support@skillswap.com</p>
+                    </div>
+                    <div class="col-md-4 border-start border-end border-gold-subtle px-4">
+                        <div class="social-icon border-gold mb-3 mx-auto shadow-sm">
+                            <i class="bi bi-geo-alt-fill text-gold fs-4"></i>
+                        </div>
+                        <h6 class="text-white mb-2 fw-bold">Visit Us</h6>
+                        <p class="text-secondary mb-0">123 Tech Avenue<br>Silicon Valley, CA 94025</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="social-icon border-gold mb-3 mx-auto shadow-sm">
+                            <i class="bi bi-telephone-fill text-gold fs-4"></i>
+                        </div>
+                        <h6 class="text-white mb-2 fw-bold">Call Us</h6>
+                        <p class="text-secondary mb-0">+1 (555) 123-4567<br>Mon-Fri, 9am-5pm</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Account Details{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <!-- User Profile Overview Sidebar -->
+    <div class="col-md-4 mb-4 mb-md-0">
+        <div class="card bg-dark border-gold shadow-sm text-center">
+            <div class="card-body p-5">
+                <div class="social-icon border-gold mb-4 mx-auto shadow-sm" style="width: 80px; height: 80px;">
+                    <i class="bi bi-person-circle text-gold" style="font-size: 3rem;"></i>
+                </div>
+                <h3 class="text-gold fw-bold">{{ current_user.username }}</h3>
+                <p class="text-secondary">{{ current_user.email }}</p>
+
+                <hr class="border-gold-subtle my-4">
+
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-gold"><i
+                            class="bi bi-speedometer2 me-2"></i>My Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Form Section -->
+    <div class="col-md-8">
+        <div class="card bg-dark border-gold shadow-sm">
+            <div class="card-body p-5">
+                <h3 class="card-title mb-4 text-gold border-bottom border-gold-subtle pb-2">Account Details</h3>
+
+                <!-- Account Update Form -->
+                <form method="POST" action="" class="needs-validation" novalidate id="accountForm">
+                    <!-- CSRF Token -->
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        {{ form.username.label(class="form-label fw-bold text-gold") }}
+                        {% if form.username.errors %}
+                        {{ form.username(class="form-control bg-darkest text-light border-danger", required=True) }}
+                        <div class="invalid-feedback text-danger">
+                            {% for error in form.username.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.username(class="form-control bg-darkest text-light border-gold-subtle", required=True)
+                        }}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form.email.label(class="form-label fw-bold text-gold") }}
+                        {% if form.email.errors %}
+                        {{ form.email(class="form-control bg-darkest text-light border-danger", required=True) }}
+                        <div class="invalid-feedback text-danger">
+                            {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.email(class="form-control bg-darkest text-light border-gold-subtle", required=True) }}
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        {{ form.submit(class="btn btn-gold btn-lg px-4 fw-bold") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
