@@ -45,6 +45,7 @@
 
                     <div class="mb-3">
                         {{ form.password.label(class="form-label fw-bold") }}
+                        <small class="form-text text-muted">Password must be at least 6 characters long.</small>
                         {% if form.password.errors %}
                         {{ form.password(class="form-control is-invalid", required=True, minlength="6") }}
                         <div class="invalid-feedback">
@@ -59,15 +60,16 @@
 
                     <div class="mb-4">
                         {{ form.confirm_password.label(class="form-label fw-bold") }}
+                        <small class="form-text text-muted">Must match the password above and be at least 6 characters.</small>
                         {% if form.confirm_password.errors %}
-                        {{ form.confirm_password(class="form-control is-invalid", required=True) }}
+                        {{ form.confirm_password(class="form-control is-invalid", required=True, minlength="6") }}
                         <div class="invalid-feedback">
                             {% for error in form.confirm_password.errors %}
                             <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                         {% else %}
-                        {{ form.confirm_password(class="form-control", required=True) }}
+                        {{ form.confirm_password(class="form-control", required=True, minlength="6") }}
                         {% endif %}
                     </div>
 
