@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, request
-from models import db, User, Category, Skill
-from forms import RegistrationForm, LoginForm, SkillForm, ContactForm, UpdateAccountForm
+from models import db, User, Category, Skill, Feedback
+from forms import RegistrationForm, LoginForm, SkillForm, ContactForm, FeedbackForm, UpdateAccountForm
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 import os
@@ -63,6 +63,18 @@ def contact():
         flash('Thank you for contacting us. We will get back to you shortly.', 'success')
         return redirect(url_for('home'))
     return render_template('contact.html', form=form)
+
+@app.route("/feedback", methods=['GET', 'POST'])
+def feedback():
+    """Render and handle the feedback form."""
+    form = FeedbackForm()
+    if form.validate_on_submit():
+        feedback_entry = Feedback(name=form.name.data, email=form.email.data, message=form.message.data)
+        db.session.add(feedback_entry)
+        db.session.commit()
+        flash('Thank you for your feedback!', 'success')
+        return redirect(url_for('home'))
+    return render_template('feedback.html', form=form)
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():

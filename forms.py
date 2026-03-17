@@ -43,6 +43,13 @@ class ContactForm(FlaskForm):
     message = TextAreaField('Message', validators=[DataRequired()])
     submit = SubmitField('Send Message')
 
+class FeedbackForm(FlaskForm):
+    """Form for users to submit feedback."""
+    name = StringField('Name', validators=[DataRequired(), Length(min=2, max=50)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    message = TextAreaField('Feedback', validators=[DataRequired()])
+    submit = SubmitField('Submit Feedback')
+
 class UpdateAccountForm(FlaskForm):
     """Form to update user profile information."""
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
