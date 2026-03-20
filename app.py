@@ -1,19 +1,21 @@
-from flask import Flask, render_template, url_for, flash, redirect, request
-from models import db, User, Category, Skill, Feedback
-from forms import RegistrationForm, LoginForm, SkillForm, ContactForm, FeedbackForm, UpdateAccountForm
+from flask import Flask, render_template, url_for, flash, redirect, request, jsonify
+from models import db, User, Category, Skill, Feedback, Comment, Like, ContactMessage
+from forms import RegistrationForm, LoginForm, SkillForm, ContactForm, FeedbackForm, CommentForm, UpdateAccountForm
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
+from flask_wtf.csrf import CSRFProtect
 import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 # Use an absolute path for SQLite to avoid confusion
-basedir = os.path.abspath(os.path.dirname(__name__))
+basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'site.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 bcrypt = Bcrypt(app)
+csrf = CSRFProtect(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
@@ -60,21 +62,39 @@ def contact():
     """Render and handle the contact form."""
     form = ContactForm()
     if form.validate_on_submit():
+        msg = ContactMessage(
+            name=form.name.data,
+            email=form.email.data,
+            subject=form.subject.data,
+            message=form.message.data
+        )
+        db.session.add(msg)
+        db.session.commit()
         flash('Thank you for contacting us. We will get back to you shortly.', 'success')
         return redirect(url_for('home'))
-    return render_template('contact.html', form=form)
+    
+    messages = []
+    if current_user.is_authenticated and current_user.is_admin:
+        messages = ContactMessage.query.order_by(ContactMessage.date_posted.desc()).all()
+        
+    return render_template('contact.html', form=form, messages=messages)
 
 @app.route("/feedback", methods=['GET', 'POST'])
+@login_required
 def feedback():
     """Render and handle the feedback form."""
     form = FeedbackForm()
     if form.validate_on_submit():
-        feedback_entry = Feedback(name=form.name.data, email=form.email.data, message=form.message.data)
+        feedback_entry = Feedback(message=form.message.data, author=current_user)
         db.session.add(feedback_entry)
         db.session.commit()
         flash('Thank you for your feedback!', 'success')
-        return redirect(url_for('home'))
-    return render_template('feedback.html', form=form)
+        return redirect(url_for('feedback'))
+    if current_user.is_admin:
+        feedbacks = Feedback.query.order_by(Feedback.date_posted.desc()).all()
+    else:
+        feedbacks = Feedback.query.filter_by(user_id=current_user.id).order_by(Feedback.date_posted.desc()).all()
+    return render_template('feedback.html', form=form, feedbacks=feedbacks)
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -132,7 +152,8 @@ def admin_panel():
         return redirect(url_for('dashboard'))
     users = User.query.order_by(User.id).all()
     skills = Skill.query.order_by(Skill.date_posted.desc()).all()
-    return render_template('admin_dashboard.html', title='Admin Panel', users=users, skills=skills)
+    feedbacks = Feedback.query.order_by(Feedback.date_posted.desc()).all()
+    return render_template('admin_dashboard.html', title='Admin Panel', users=users, skills=skills, feedbacks=feedbacks)
 
 @app.route("/admin/user/<int:user_id>/delete", methods=['POST'])
 @login_required
@@ -170,6 +191,48 @@ def search():
     else:
         skills = []
     return render_template('search_results.html', title='Search Results', skills=skills, query=query)
+
+@app.route("/user/<username>")
+def user_profile(username):
+    """View a user's profile and their skills."""
+    user = User.query.filter_by(username=username).first_or_404()
+    skills = Skill.query.filter_by(author=user).order_by(Skill.date_posted.desc()).all()
+    return render_template('user_profile.html', user=user, skills=skills)
+
+@app.route("/skill/<int:skill_id>", methods=['GET', 'POST'])
+@login_required
+def skill(skill_id):
+    """View a skill and its comments, and allow adding comments."""
+    skill = Skill.query.get_or_404(skill_id)
+    form = CommentForm()
+    if form.validate_on_submit():
+        comment = Comment(content=form.content.data, author=current_user, skill=skill)
+        db.session.add(comment)
+        db.session.commit()
+        flash('Your comment has been added!', 'success')
+        return redirect(url_for('skill', skill_id=skill.id))
+    comments = Comment.query.filter_by(skill_id=skill_id).order_by(Comment.date_posted).all()
+    likes_count = Like.query.filter_by(skill_id=skill_id).count()
+    user_liked = Like.query.filter_by(user_id=current_user.id, skill_id=skill_id).first() is not None
+    return render_template('skill.html', skill=skill, comments=comments, form=form, likes_count=likes_count, user_liked=user_liked)
+
+@app.route("/like/<int:skill_id>", methods=['POST'])
+@login_required
+def like_skill(skill_id):
+    """Toggle like on a skill."""
+    skill = Skill.query.get_or_404(skill_id)
+    like = Like.query.filter_by(user_id=current_user.id, skill_id=skill_id).first()
+    if like:
+        db.session.delete(like)
+        db.session.commit()
+        liked = False
+    else:
+        like = Like(user_id=current_user.id, skill_id=skill_id)
+        db.session.add(like)
+        db.session.commit()
+        liked = True
+    count = Like.query.filter_by(skill_id=skill_id).count()
+    return jsonify({'liked': liked, 'count': count})
 
 @app.route("/account", methods=['GET', 'POST'])
 @login_required
@@ -238,6 +301,34 @@ def delete_skill(skill_id):
     db.session.commit()
     flash('Your skill has been deleted!', 'success')
     return redirect(url_for('dashboard'))
+
+@app.route("/admin/feedback/<int:feedback_id>/delete", methods=['POST'])
+@login_required
+def admin_delete_feedback(feedback_id):
+    """Admin function to delete a feedback entry."""
+    if not current_user.is_admin:
+        flash('You do not have permission to perform this action.', 'danger')
+        return redirect(url_for('dashboard'))
+    
+    feedback = Feedback.query.get_or_404(feedback_id)
+    db.session.delete(feedback)
+    db.session.commit()
+    flash('Feedback has been deleted.', 'success')
+    return redirect(url_for('admin_panel'))
+
+@app.route("/admin/contact/<int:msg_id>/delete", methods=['POST'])
+@login_required
+def admin_delete_contact(msg_id):
+    """Admin function to delete a contact message."""
+    if not current_user.is_admin:
+        flash('You do not have permission to perform this action.', 'danger')
+        return redirect(url_for('dashboard'))
+    
+    msg = ContactMessage.query.get_or_404(msg_id)
+    db.session.delete(msg)
+    db.session.commit()
+    flash('Contact message has been deleted.', 'success')
+    return redirect(url_for('contact'))
 
 @app.errorhandler(404)
 def error_404(error):

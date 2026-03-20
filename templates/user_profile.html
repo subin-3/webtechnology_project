@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ user.username }}'s Profile{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card bg-dark border-gold shadow-lg mt-4">
+            <div class="card-body p-5 text-center">
+                <h2 class="text-gold">{{ user.username }}</h2>
+                <p class="text-light">{{ user.email }}</p>
+                {% if user.is_admin %}
+                <span class="badge bg-danger">Admin</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card bg-dark border-gold shadow-lg mt-4">
+            <div class="card-header bg-darkest text-gold fw-bold">
+                {{ user.username }}'s Skills
+            </div>
+            <div class="card-body">
+                {% if skills %}
+                <div class="row g-3">
+                    {% for skill in skills %}
+                    <div class="col-md-6">
+                        <div class="card h-100 bg-darkest border-gold-subtle">
+                            <div class="card-body">
+                                <h5 class="card-title"><a href="{{ url_for('skill', skill_id=skill.id) }}" class="text-gold text-decoration-none">{{ skill.title }}</a></h5>
+                                <p class="card-text text-light small">{{ skill.description|truncate(100) }}</p>
+                                <small class="text-secondary">{{ skill.date_posted.strftime('%B %d, %Y') }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No skills posted yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

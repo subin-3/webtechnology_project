@@ -3,88 +3,135 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card bg-dark border-gold shadow-lg mt-4">
-            <div class="card-body p-5">
-                <div class="text-center mb-5">
-                    <h2 class="text-gold fw-bold display-5">Share Your Feedback</h2>
-                    <p class="text-light lead">Help us improve by sharing your thoughts and suggestions.</p>
+    <div class="col-lg-10">
+        <div class="row g-4">
+            <!-- Left Column: Form for Users / Stats for Admin -->
+            <div class="col-md-5">
+                {% if current_user.is_admin %}
+                <div class="card bg-dark border-gold shadow-lg h-100">
+                    <div class="card-body p-4 p-lg-5">
+                        <div class="mb-4">
+                            <h2 class="text-gold fw-bold">Feedback Insights</h2>
+                            <p class="text-secondary small">You are viewing the feedback moderation panel.</p>
+                        </div>
+                        
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="p-3 bg-darkest rounded border border-gold-subtle text-center shadow-sm">
+                                    <h3 class="text-gold mb-1">{{ feedbacks|length }}</h3>
+                                    <small class="text-secondary x-small">Total Feedback</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-darkest rounded border border-gold-subtle text-center shadow-sm">
+                                    <h3 class="text-gold mb-1">{{ feedbacks|selectattr('author', 'defined')|list|length }}</h3>
+                                    <small class="text-secondary x-small">Verified Users</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5">
+                            <h6 class="text-light mb-3 fw-bold">Moderation Actions</h6>
+                            <ul class="list-unstyled small text-secondary">
+                                <li class="mb-2"><i class="bi bi-check2-circle text-gold me-2"></i>Review new suggestions</li>
+                                <li class="mb-2"><i class="bi bi-trash text-danger me-2"></i>Remove inappropriate content</li>
+                                <li class="mb-2"><i class="bi bi-person-check text-gold me-2"></i>Identify top contributors</li>
+                            </ul>
+                            <div class="d-grid mt-4">
+                                <a href="{{ url_for('admin_panel') }}" class="btn btn-outline-gold fw-bold">Open Full Admin Panel</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                {% else %}
+                <div class="card bg-dark border-gold shadow-lg h-100">
+                    <div class="card-body p-4 p-lg-5">
+                        <div class="mb-4">
+                            <h2 class="text-gold fw-bold">Share Your Thoughts</h2>
+                            <p class="text-secondary small">Your suggestions help us build a better community for everyone.</p>
+                        </div>
 
-                <!-- Feedback Form -->
-                <form method="POST" action="" class="needs-validation" novalidate>
-                    {{ form.hidden_tag() }}
+                        <form method="POST" action="" class="needs-validation" novalidate>
+                            {{ form.hidden_tag() }}
 
-                    <div class="row g-3">
-                        <div class="col-md-6 mb-3">
-                            {{ form.name.label(class="form-label text-gold fw-bold") }}
-                            {% if form.name.errors %}
-                            {{ form.name(class="form-control bg-darkest text-light border-danger", required=True) }}
-                            <div class="invalid-feedback text-danger">
-                                {% for error in form.name.errors %}
-                                <span>{{ error }}</span>
-                                {% endfor %}
+                            <div class="mb-4">
+                                {{ form.message.label(class="form-label text-gold small fw-bold") }}
+                                {% if form.message.errors %}
+                                {{ form.message(class="form-control bg-darkest text-light border-danger", rows="5", placeholder="I'd love to see...", required=True) }}
+                                <div class="invalid-feedback d-block text-danger">
+                                    {% for error in form.message.errors %}
+                                    <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                {{ form.message(class="form-control bg-darkest text-light border-gold-subtle", rows="5", placeholder="I'd love to see...", required=True) }}
+                                {% endif %}
                             </div>
-                            {% else %}
-                            {{ form.name(class="form-control bg-darkest text-light border-gold-subtle", required=True) }}
-                            {% endif %}
-                        </div>
 
-                        <div class="col-md-6 mb-3">
-                            {{ form.email.label(class="form-label text-gold fw-bold") }}
-                            {% if form.email.errors %}
-                            {{ form.email(class="form-control bg-darkest text-light border-danger", required=True) }}
-                            <div class="invalid-feedback text-danger">
-                                {% for error in form.email.errors %}
-                                <span>{{ error }}</span>
-                                {% endfor %}
+                            <div class="d-grid">
+                                {{ form.submit(class="btn btn-gold btn-lg fw-bold shadow-sm") }}
                             </div>
-                            {% else %}
-                            {{ form.email(class="form-control bg-darkest text-light border-gold-subtle", required=True) }}
-                            {% endif %}
-                        </div>
+                        </form>
                     </div>
-
-                    <div class="mb-4">
-                        {{ form.message.label(class="form-label text-gold fw-bold") }}
-                        {% if form.message.errors %}
-                        {{ form.message(class="form-control bg-darkest text-light border-danger", rows="6", required=True) }}
-                        <div class="invalid-feedback text-danger">
-                            {% for error in form.message.errors %}
-                            <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                        {% else %}
-                        {{ form.message(class="form-control bg-darkest text-light border-gold-subtle", rows="6", required=True) }}
-                        {% endif %}
-                    </div>
-
-                    <div class="d-grid gap-2">
-                        {{ form.submit(class="btn btn-gold btn-lg fw-bold") }}
-                    </div>
-                </form>
+                </div>
+                {% endif %}
             </div>
 
-            <!-- Feedback Info Footer in Card -->
-            <div class="card-footer bg-darkest text-center py-5 border-gold-top">
-                <div class="row text-light g-4">
-                    <div class="col-md-6">
-                        <div class="social-icon border-gold mb-3 mx-auto shadow-sm">
-                            <i class="bi bi-envelope-fill text-gold fs-4"></i>
-                        </div>
-                        <h6 class="text-white mb-2 fw-bold">Email Us</h6>
-                        <p class="text-secondary mb-0">feedback@skillswap.com</p>
+            <!-- Feedback History Column -->
+            <div class="col-md-7">
+                <div class="card bg-darkest border-gold-subtle shadow-lg h-100 overflow-hidden">
+                    <div class="card-header bg-dark border-bottom border-gold-subtle py-3 px-4">
+                        <h5 class="text-gold mb-0">
+                            <i class="bi {% if current_user.is_admin %}bi-chat-heart{% else %}bi-clock-history{% endif %} me-2"></i>
+                            {% if current_user.is_admin %}Admin Feedback Board (All){% else %}Your Recent Feedback{% endif %}
+                        </h5>
                     </div>
-                    <div class="col-md-6 border-start border-gold-subtle px-4">
-                        <div class="social-icon border-gold mb-3 mx-auto shadow-sm">
-                            <i class="bi bi-chat-dots-fill text-gold fs-4"></i>
-                        </div>
-                        <h6 class="text-white mb-2 fw-bold">Your Feedback Matters</h6>
-                        <p class="text-secondary mb-0">We read every submission and use it to improve our platform.</p>
+                    <div class="card-body p-4 overflow-auto" style="max-height: 500px;">
+                        {% set recent_feedbacks = feedbacks[:5] if feedbacks else [] %}
+                        {% if recent_feedbacks %}
+                            {% for fb in recent_feedbacks %}
+                            <div class="mb-4 p-3 bg-dark rounded border-start border-gold border-3 shadow-sm">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-gold fw-bold small">
+                                        {% if fb.author %}
+                                        <a href="{{ url_for('user_profile', username=fb.author.username) }}" class="text-gold text-decoration-none hover-underline">{{ fb.author.username }}</a>
+                                        {% else %}
+                                        Anonymous
+                                        {% endif %}
+                                    </span>
+                                    <small class="text-muted" style="font-size: 0.75rem;">{{ fb.date_posted.strftime('%b %d') }}</small>
+                                </div>
+                                <p class="text-light mb-0 small" style="line-height: 1.4; opacity: 0.9;">"{{ fb.message|truncate(150) }}"</p>
+                            </div>
+                            {% endfor %}
+                            <div class="text-center mt-3">
+                                <p class="text-secondary small mb-0">Join our growing list of contributors!</p>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="bi bi-chat-dots text-secondary opacity-25 display-4"></i>
+                                <p class="text-muted mt-3">Be the first to share your experience!</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support Info Section -->
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <div class="d-inline-flex gap-4 p-3 bg-dark rounded-pill border border-gold-subtle px-5 shadow-sm">
+                    <div class="text-light small">
+                        <i class="bi bi-envelope-at text-gold me-2"></i>feedback@skillswap.com
+                    </div>
+                    <div class="vr text-secondary opacity-25"></div>
+                    <div class="text-light small">
+                        <i class="bi bi-shield-check text-gold me-2"></i>Moderated Community
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock %}

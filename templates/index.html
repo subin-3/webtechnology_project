@@ -5,8 +5,8 @@
 <!-- Hero Section -->
 <div class="p-5 mb-5 bg-darkest border border-gold shadow-lg rounded-3 text-center hero-section">
     <div class="container-fluid py-5">
-        <h1 class="display-4 fw-bold text-gold mb-3"><i class="bi bi-stars me-2"></i>Welcome to SkillSwap</h1>
-        <p class="col-md-8 mx-auto fs-4 text-light">
+        <h2 class="fw-bold text-gold mb-2"><i class="bi bi-stars me-2"></i>Welcome to SkillSwap</h2>
+        <p class="col-md-8 mx-auto fs-6 text-light opacity-75">
             A premium community platform to exchange skills, learn new things, and collaborate with others globally.
         </p>
 
@@ -39,18 +39,26 @@
     <div class="col-md-4">
         <div class="card h-100 shadow-sm skill-card border-gold-subtle bg-dark">
             <div class="card-body p-4">
-                <h5 class="card-title text-gold">{{ skill.title }}</h5>
+                <h5 class="card-title"><a href="{{ url_for('skill', skill_id=skill.id) }}" class="text-gold text-decoration-none">{{ skill.title }}</a></h5>
                 <h6 class="card-subtitle mb-3 text-muted">
                     <span class="badge bg-secondary">{{ skill.category.name }}</span>
-                    <small class="ms-2">By <span class="text-light fw-bold">{{ skill.author.username }}</span></small>
+                    <small class="ms-2">By <a href="{{ url_for('user_profile', username=skill.author.username) }}" class="text-gold text-decoration-none fw-bold hover-underline">{{ skill.author.username }}</a></small>
                 </h6>
                 <p class="card-text text-light">{{ skill.description|truncate(120) }}</p>
             </div>
-            <div
-                class="card-footer bg-darkest border-top border-gold-subtle d-flex justify-content-between align-items-center">
-                <small class="text-secondary"><i class="bi bi-clock me-1"></i>{{ skill.date_posted.strftime('%B %d, %Y')
-                    }}</small>
-            </div>
+                <div class="card-footer bg-darkest border-top border-gold-subtle d-flex justify-content-between align-items-center py-3">
+                    <div class="d-flex gap-4">
+                        <button type="button" class="btn btn-link text-decoration-none p-0 social-btn like-btn {% if current_user.is_authenticated and skill.likes|selectattr('user_id', 'equalto', current_user.id)|list|length > 0 %}active{% endif %}" 
+                                data-skill-id="{{ skill.id }}" 
+                                title="Like">
+                            <i class="bi bi-heart{% if current_user.is_authenticated and skill.likes|selectattr('user_id', 'equalto', current_user.id)|list|length > 0 %}-fill{% endif %} me-1 fs-5"></i>
+                            <span class="like-count fw-bold">{{ skill.likes|length }}</span>
+                        </button>
+                    </div>
+                    <a href="{{ url_for('skill', skill_id=skill.id) }}#comments" class="btn btn-outline-gold btn-sm px-4 rounded-pill fw-bold">
+                        <i class="bi bi-chat-dots me-1"></i> Comment
+                    </a>
+                </div>
         </div>
     </div>
     {% endfor %}

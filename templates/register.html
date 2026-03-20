@@ -2,88 +2,104 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow-sm border-0 mt-3">
-            <div class="card-body p-5">
-                <center>
-                    <h3 class="card-title mb-4 text-primary">Create an Account</h3>
-                </center>
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-md-5">
+        <div class="card bg-dark border-gold shadow-lg overflow-hidden">
+            <div class="card-body p-4 p-md-5">
+                <div class="text-center mb-5">
+                    <div class="d-inline-flex bg-gold text-dark rounded-circle p-3 mb-3 shadow-sm">
+                        <i class="bi bi-person-plus-fill fs-2"></i>
+                    </div>
+                    <h2 class="text-gold fw-bold">Create Account</h2>
+                    <p class="text-secondary small">Join the SkillSwap community and start exchanging expertise.</p>
+                </div>
 
                 <!-- Registration Form -->
                 <form method="POST" action="" class="needs-validation" novalidate id="registerForm">
-                    <!-- CSRF Token -->
                     {{ form.hidden_tag() }}
 
-                    <div class="mb-3">
-                        {{ form.username.label(class="form-label fw-bold") }}
+                    <div class="mb-4">
+                        {{ form.username.label(class="form-label text-gold small fw-bold") }}
                         {% if form.username.errors %}
-                        {{ form.username(class="form-control is-invalid", required=True) }}
-                        <div class="invalid-feedback">
+                        {{ form.username(class="form-control bg-darkest text-light border-danger py-2", placeholder="YourUsername", required=True) }}
+                        <div class="invalid-feedback d-block">
                             {% for error in form.username.errors %}
-                            <span>{{ error }}</span>
+                            <span class="small text-danger">{{ error }}</span>
                             {% endfor %}
                         </div>
                         {% else %}
-                        {{ form.username(class="form-control", required=True) }}
-                        {% endif %}
-                    </div>
-
-                    <div class="mb-3">
-                        {{ form.email.label(class="form-label fw-bold") }}
-                        {% if form.email.errors %}
-                        {{ form.email(class="form-control is-invalid", required=True) }}
-                        <div class="invalid-feedback">
-                            {% for error in form.email.errors %}
-                            <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                        {% else %}
-                        {{ form.email(class="form-control", required=True) }}
-                        {% endif %}
-                    </div>
-
-                    <div class="mb-3">
-                        {{ form.password.label(class="form-label fw-bold") }}
-                        <small class="form-text text-muted">Password must be at least 6 characters long.</small>
-                        {% if form.password.errors %}
-                        {{ form.password(class="form-control is-invalid", required=True, minlength="6") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.password.errors %}
-                            <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                        {% else %}
-                        {{ form.password(class="form-control", required=True, minlength="6") }}
+                        {{ form.username(class="form-control bg-darkest text-light border-gold-subtle py-2", placeholder="YourUsername", required=True) }}
                         {% endif %}
                     </div>
 
                     <div class="mb-4">
-                        {{ form.confirm_password.label(class="form-label fw-bold") }}
-                        <small class="form-text text-muted">Must match the password above and be at least 6 characters.</small>
-                        {% if form.confirm_password.errors %}
-                        {{ form.confirm_password(class="form-control is-invalid", required=True, minlength="6") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.confirm_password.errors %}
-                            <span>{{ error }}</span>
+                        {{ form.email.label(class="form-label text-gold small fw-bold") }}
+                        {% if form.email.errors %}
+                        {{ form.email(class="form-control bg-darkest text-light border-danger py-2", placeholder="name@example.com", required=True) }}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.email.errors %}
+                            <span class="small text-danger">{{ error }}</span>
                             {% endfor %}
                         </div>
                         {% else %}
-                        {{ form.confirm_password(class="form-control", required=True, minlength="6") }}
+                        {{ form.email(class="form-control bg-darkest text-light border-gold-subtle py-2", placeholder="name@example.com", required=True) }}
                         {% endif %}
                     </div>
 
-                    <div class="d-grid gap-2">
-                        {{ form.submit(class="btn btn-primary btn-lg") }}
+                    <div class="mb-4">
+                        {{ form.password.label(class="form-label text-gold small fw-bold") }}
+                        {% if form.password.errors %}
+                        {{ form.password(class="form-control bg-darkest text-light border-danger py-2", placeholder="••••••••", required=True) }}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.password.errors %}
+                            <span class="small text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.password(class="form-control bg-darkest text-light border-gold-subtle py-2", placeholder="••••••••", required=True) }}
+                        {% endif %}
+                        <small class="text-secondary x-small mt-1 d-block opacity-75">Must be at least 6 characters.</small>
+                    </div>
+
+                    <div class="mb-5">
+                        {{ form.confirm_password.label(class="form-label text-gold small fw-bold") }}
+                        {% if form.confirm_password.errors %}
+                        {{ form.confirm_password(class="form-control bg-darkest text-light border-danger py-2", placeholder="••••••••", required=True) }}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.confirm_password.errors %}
+                            <span class="small text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.confirm_password(class="form-control bg-darkest text-light border-gold-subtle py-2", placeholder="••••••••", required=True) }}
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-gold btn-lg fw-bold shadow-sm py-2") }}
                     </div>
                 </form>
             </div>
 
-            <div class="card-footer bg-white text-center py-3 border-0">
-                <span class="text-muted">Already have an account? <a href="{{ url_for('login') }}"
-                        class="text-primary text-decoration-none fw-bold">Sign In</a></span>
+            <div class="card-footer bg-darkest text-center py-4 border-top border-gold-subtle">
+                <span class="text-secondary small">Already have an account? <a href="{{ url_for('login') }}"
+                        class="text-gold text-decoration-none fw-bold ms-1">Sign In</a></span>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .border-gold { border: 1px solid var(--gold) !important; }
+    .border-gold-subtle { border: 1px solid rgba(212, 175, 55, 0.3) !important; }
+    .bg-darkest { background-color: #111 !important; }
+    .x-small { font-size: 0.7rem; }
+    
+    .form-control:focus {
+        background-color: #1a1a1a !important;
+        border-color: var(--gold) !important;
+        box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.15);
+        color: white !important;
+    }
+</style>
 {% endblock %}

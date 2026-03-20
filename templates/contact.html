@@ -6,6 +6,17 @@
     <div class="col-lg-8">
         <div class="card bg-dark border-gold shadow-lg mt-4">
             <div class="card-body p-5">
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                <div class="text-center mb-5">
+                    <h2 class="text-gold fw-bold display-5">Admin Control Center</h2>
+                    <p class="text-light lead">Manage user inquiries and community support requests.</p>
+                    <div class="mt-4">
+                        <a href="#admin-inbox" class="btn btn-gold px-4 fw-bold shadow-sm">
+                            <i class="bi bi-inbox-fill me-2"></i>Go to Inbox
+                        </a>
+                    </div>
+                </div>
+                {% else %}
                 <div class="text-center mb-5">
                     <h2 class="text-gold fw-bold display-5">Get in Touch</h2>
                     <p class="text-light lead">Have questions or feedback? We'd love to hear from you.</p>
@@ -81,6 +92,7 @@
                         {{ form.submit(class="btn btn-gold btn-lg fw-bold") }}
                     </div>
                 </form>
+                {% endif %}
             </div>
 
             <!-- Contact Info Footer in Card -->
@@ -110,6 +122,75 @@
                 </div>
             </div>
         </div>
+
+        {% if current_user.is_authenticated and current_user.is_admin %}
+        <!-- Admin Inbox Section -->
+        <div id="admin-inbox" class="card bg-dark border-gold shadow-lg mt-5 mb-5 overflow-hidden">
+            <div class="card-header bg-darkest border-bottom border-gold d-flex justify-content-between align-items-center py-3 px-4">
+                <h3 class="text-gold mb-0 fw-bold"><i class="bi bi-inbox-fill me-2"></i>Contact Inbox</h3>
+                <span class="badge bg-gold text-dark rounded-pill px-3">{{ messages|length }} Messages</span>
+            </div>
+            <div class="card-body p-0">
+                {% if messages %}
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover mb-0 align-middle">
+                        <thead class="bg-darkest text-gold opacity-75">
+                            <tr>
+                                <th class="ps-4 py-3 border-gold-subtle">Sender</th>
+                                <th class="py-3 border-gold-subtle">Subject</th>
+                                <th class="py-3 border-gold-subtle">Date</th>
+                                <th class="pe-4 py-3 text-end border-gold-subtle">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for msg in messages %}
+                            <tr class="border-gold-subtle">
+                                <td class="ps-4 py-4">
+                                    <div class="fw-bold text-white">{{ msg.name }}</div>
+                                    <small class="text-secondary">{{ msg.email }}</small>
+                                </td>
+                                <td>
+                                    <div class="text-gold fw-bold mb-1">{{ msg.subject }}</div>
+                                    <p class="text-light mb-0 small opacity-75" style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                        {{ msg.message }}
+                                    </p>
+                                </td>
+                                <td class="text-secondary small">
+                                    {{ msg.date_posted.strftime('%b %d, %H:%M') }}
+                                </td>
+                                <td class="pe-4 text-end">
+                                    <button class="btn btn-sm btn-outline-gold me-2" type="button" data-bs-toggle="collapse" data-bs-target="#msg-{{ msg.id }}">
+                                        Read
+                                    </button>
+                                    <form action="{{ url_for('admin_delete_contact', msg_id=msg.id) }}" method="POST" style="display: inline;">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this message?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr class="collapse border-0" id="msg-{{ msg.id }}">
+                                <td colspan="4" class="p-0 border-0">
+                                    <div class="bg-darkest p-4 border-start border-gold mx-4 mb-3 rounded-bottom shadow-inner">
+                                        <h6 class="text-gold fw-bold mb-2">Message Content:</h6>
+                                        <p class="text-light mb-0" style="white-space: pre-wrap; line-height: 1.6;">{{ msg.message }}</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-envelope-open text-secondary display-4 opacity-25"></i>
+                    <p class="text-muted mt-3">Your inbox is empty!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

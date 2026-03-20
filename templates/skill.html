@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}{{ skill.title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- Post Detail Card -->
+        <div class="card bg-dark border-gold shadow-lg mt-4 mb-4 overflow-hidden">
+            <div class="card-body p-4 p-md-5">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h1 class="card-title text-gold fw-bold mb-1">{{ skill.title }}</h1>
+                        <span class="badge bg-gold text-dark px-3 py-2 rounded-pill">{{ skill.category.name }}</span>
+                    </div>
+                </div>
+                
+                <div class="d-flex align-items-center mb-4 pb-3 border-bottom border-gold-subtle">
+                    <div class="bg-gold text-dark rounded-circle d-flex align-items-center justify-content-center fw-bold me-3" style="width: 45px; height: 45px;">
+                        {{ skill.author.username[0]|upper }}
+                    </div>
+                    <div>
+                        <p class="mb-0 text-gold fw-bold">
+                            <a href="{{ url_for('user_profile', username=skill.author.username) }}" class="text-gold text-decoration-none hover-underline">{{ skill.author.username }}</a>
+                        </p>
+                        <small class="text-secondary"><i class="bi bi-clock me-1"></i>Posted on {{ skill.date_posted.strftime('%B %d, %Y') }}</small>
+                    </div>
+                </div>
+
+                <div class="card-text text-light fs-5 mb-5" style="line-height: 1.6;">
+                    {{ skill.description }}
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center pt-3 border-top border-gold-subtle">
+                    <div class="d-flex gap-4">
+                        <button type="button" class="btn btn-link text-decoration-none p-0 social-btn like-btn {% if user_liked %}active{% endif %}" 
+                                data-skill-id="{{ skill.id }}" 
+                                title="Like">
+                            <i class="bi bi-heart{% if user_liked %}-fill{% endif %} me-1 fs-4"></i>
+                            <span class="like-count fw-bold fs-5">{{ likes_count }}</span>
+                        </button>
+                    </div>
+                    <a href="#comments" class="btn btn-outline-gold px-4 rounded-pill fw-bold">
+                        <i class="bi bi-chat-dots me-1"></i> Comment
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div id="comments" class="card bg-dark border-gold shadow-lg mt-4 mb-5">
+            <div class="card-header bg-darkest border-bottom border-gold text-gold fw-bold py-3">
+                <i class="bi bi-chat-left-text me-2"></i>Comments
+            </div>
+            <div class="card-body p-4">
+                {% if comments %}
+                <div class="comment-list mb-4">
+                    {% for comment in comments %}
+                    <div class="mb-4 p-3 bg-darkest rounded border border-secondary border-opacity-25 shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-secondary bg-opacity-25 text-gold rounded-circle d-flex align-items-center justify-content-center fw-bold me-2" style="width: 30px; height: 30px; font-size: 0.8rem;">
+                                    {{ comment.author.username[0]|upper }}
+                                </div>
+                                <strong class="text-gold">
+                                    <a href="{{ url_for('user_profile', username=comment.author.username) }}" class="text-gold text-decoration-none hover-underline">{{ comment.author.username }}</a>
+                                </strong>
+                            </div>
+                            <small class="text-muted">{{ comment.date_posted.strftime('%b %d, %H:%M') }}</small>
+                        </div>
+                        <p class="mb-0 text-light ms-4 ps-1" style="word-break: break-word;">{{ comment.content }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5 mb-4">
+                    <i class="bi bi-chat-square-dots text-secondary display-4"></i>
+                    <p class="text-muted mt-3">Be the first to share your thoughts!</p>
+                </div>
+                {% endif %}
+
+                <!-- Add Comment Form -->
+                <div class="bg-darkest p-4 rounded border border-gold-subtle">
+                    <h5 class="text-gold mb-3 d-flex align-items-center">
+                        <i class="bi bi-pencil-square me-2"></i>Write a Comment
+                    </h5>
+                    <form method="POST" action="" class="needs-validation" novalidate>
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {% if form.content.errors %}
+                            {{ form.content(class="form-control bg-dark text-light border-danger", rows="3", placeholder="What's on your mind?", required=True) }}
+                            <div class="invalid-feedback d-block text-danger">
+                                {% for error in form.content.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.content(class="form-control bg-dark text-light border-gold-subtle", rows="3", placeholder="What's on your mind?", required=True) }}
+                            {% endif %}
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            {{ form.submit(class="btn btn-gold px-4 fw-bold shadow-sm") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+    .hover-underline:hover { text-decoration: underline !important; }
+    .like-btn.active { background-color: var(--gold) !important; color: var(--darkest) !important; }
+    .like-btn:hover { transform: translateY(-2px); transition: all 0.2s; }
+</style>
+{% endblock %}
